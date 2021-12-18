@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.810.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSVAvaility", "CSVAvaility\CSVAvaility.csproj", "{E2F3E8F1-B357-4ADA-922B-6AA078D3531E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E2F3E8F1-B357-4ADA-922B-6AA078D3531E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2F3E8F1-B357-4ADA-922B-6AA078D3531E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2F3E8F1-B357-4ADA-922B-6AA078D3531E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2F3E8F1-B357-4ADA-922B-6AA078D3531E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A8754ED2-413C-4CDA-901A-24DCF7674AC6}
+	EndGlobalSection
+EndGlobal
