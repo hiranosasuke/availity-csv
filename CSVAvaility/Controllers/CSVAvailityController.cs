@@ -23,6 +23,11 @@ namespace CSVAvaility.Controllers
         [HttpPost, DisableRequestSizeLimit]
         public IActionResult Post()
         {
+            if (Request.Form.Files.Count <= 0)
+            {
+                return BadRequest("No files uploaded");
+            }
+
             var file = Request.Form.Files[0];
 
             if (file.ContentType != "text/csv")
