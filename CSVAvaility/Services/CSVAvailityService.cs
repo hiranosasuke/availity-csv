@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using CSVAvaility.Interfaces;
+using CsvHelper;
 
 namespace CSVAvaility.Services
 {
     public static class CSVAvailityService
     {
-        private static Dictionary<String, List<Enrollee>> diction;
+        private static Dictionary<string, List<Enrollee>> diction;
 
-        public static Dictionary<String, List<Enrollee>> ParseCSV(List<Enrollee> enrollees)
+        // Takes a list of all enrollees, then separates them into their own list of enrolles
+        // by their insurance companies.
+        public static Dictionary<string, List<Enrollee>> ParseCSV(List<Enrollee> enrollees)
         {
-            Dictionary<String, List<Enrollee>> result = new Dictionary<String, List<Enrollee>>();
-            diction = new Dictionary<String, List<Enrollee>>();
+            Dictionary<string, List<Enrollee>> result = new Dictionary<string, List<Enrollee>>();
+            diction = new Dictionary<string, List<Enrollee>>();
 
             foreach (var item in enrollees)
             {
@@ -50,26 +51,35 @@ namespace CSVAvaility.Services
 
             foreach (var item in diction)
             {
-                var sortedEnrollees = item.Value.OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ToList();
-                result[item.Key] = sortedEnrollees;
+                var sortedEnrollees = item.Value;
+                result[item.Key] = sortedEnrollees.OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ToList();
             }
 
             return result;
         }
 
-        public static HttpResponseMessage WriteCSV(string filePath = "")
+        public static MemoryStream ConvertToCSVs(Dictionary<string, List<Enrollee>> diction)
         {
-            MemoryStream stream = new MemoryStream();
-            StreamWriter writer = new StreamWriter(stream);
-            writer.Write("Hello, World!");
-            writer.Flush();
-            stream.Position = 0;
+            var memoryStream = new MemoryStream();
 
-            HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
-            result.Content = new StreamContent(stream);
-            result.Content.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
-            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") { FileName = "Export.csv" };
-            return result;
+            using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+            {
+                foreach (var item in diction)
+                {
+                    var demoFile = archive.CreateEntry(item.Key + ".csv");
+
+                    using (var entryStream = demoFile.Open())
+                    using (var streamWriter = new StreamWriter(entryStream))
+                    {
+                        using (var csv = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
+                        {
+                            csv.WriteRecords(item.Value);
+                        }
+                    }
+                }
+            }
+
+            return memoryStream;
         }
     }
 }

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using CSVAvaility.Interfaces;
 using CsvHelper;
 using System.Globalization;
 using CSVAvaility.Services;
-using System.Net.Http;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,14 +16,19 @@ namespace CSVAvaility.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            return View();
+            return Ok("Success!");
         }
 
         // POST api/values
         [HttpPost, DisableRequestSizeLimit]
-        public HttpResponseMessage Post([FromForm] IFormFile filee)
+        public IActionResult Post()
         {
             var file = Request.Form.Files[0];
+
+            if (file.ContentType != "text/csv")
+            {
+                return BadRequest("Please upload a csv file");
+            }
 
             if (file.Length > 0)
             {
@@ -38,19 +38,15 @@ namespace CSVAvaility.Controllers
                     {
                         csvReader.Context.RegisterClassMap<EnrolleesClassMap>();
                         var records = csvReader.GetRecords<Enrollee>().ToList();
-                        var asd = CSVAvailityService.ParseCSV(records);
+                        var insuredEnrollees = CSVAvailityService.ParseCSV(records);
+                        var zip = CSVAvailityService.ConvertToCSVs(insuredEnrollees);
+                        return File(zip.ToArray(), "application/zip");
                     }
                 }
-
-
-                var qwe = CSVAvailityService.WriteCSV();
-                return qwe;
-
-                //return Ok();
             }
             else
             {
-                return new HttpResponseMessage();
+                return BadRequest("File is empty");
             }
         }
     }
