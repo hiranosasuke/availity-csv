@@ -8,6 +8,7 @@
     <None Remove="Interfaces\" />
     <None Remove="CsvHelper" />
     <None Remove="Services\" />
+    <None Remove="Ionic.Zip" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces\" />
